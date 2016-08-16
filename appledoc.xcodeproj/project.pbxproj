@@ -174,6 +174,11 @@
 		86466CB01AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m in Sources */ = {isa = PBXBuildFile; fileRef = 86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 		9328C127BD1269A1A2447359 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9328CE2BEBC125BF215A96C1 /* Localizable.strings */; };
+		A94AC0E81D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A94AC0E71D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.m */; };
+		A94AC0E91D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = A94AC0E71D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.m */; };
+		A98533D01D63965B001C1EDD /* GBFullMarkdownOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = A98533CF1D63965B001C1EDD /* GBFullMarkdownOutputGenerator.m */; };
+		A9C774061D5CF08F0099A709 /* GBMarkdownOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C774051D5CF08F0099A709 /* GBMarkdownOutputGenerator.m */; };
+		A9C774071D5CF08F0099A709 /* GBMarkdownOutputGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = A9C774051D5CF08F0099A709 /* GBMarkdownOutputGenerator.m */; };
 		B4D1FFDD15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFDE15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		B4D1FFDF15FF5F05009736E2 /* DDZipReader.m in Sources */ = {isa = PBXBuildFile; fileRef = B4D1FFCD15FF5F05009736E2 /* DDZipReader.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -398,6 +403,12 @@
 		86466CAF1AAA1477002B003C /* GObjectiveCParser-BlockParsingTesting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GObjectiveCParser-BlockParsingTesting.m"; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* appledoc */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = appledoc; sourceTree = BUILT_PRODUCTS_DIR; };
 		9328CE2BEBC125BF215A96C1 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = Application/Localizable.strings; sourceTree = "<group>"; };
+		A94AC0E61D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBMarkdownTemplateVariablesProvider.h; sourceTree = "<group>"; };
+		A94AC0E71D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMarkdownTemplateVariablesProvider.m; sourceTree = "<group>"; };
+		A98533CE1D63965B001C1EDD /* GBFullMarkdownOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBFullMarkdownOutputGenerator.h; sourceTree = "<group>"; };
+		A98533CF1D63965B001C1EDD /* GBFullMarkdownOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBFullMarkdownOutputGenerator.m; sourceTree = "<group>"; };
+		A9C774041D5CF08F0099A709 /* GBMarkdownOutputGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GBMarkdownOutputGenerator.h; sourceTree = "<group>"; };
+		A9C774051D5CF08F0099A709 /* GBMarkdownOutputGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GBMarkdownOutputGenerator.m; sourceTree = "<group>"; };
 		B4D1FFCA15FF5F05009736E2 /* DDZippedFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDZippedFileInfo.h; sourceTree = "<group>"; };
 		B4D1FFCB15FF5F05009736E2 /* DDZippedFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DDZippedFileInfo.m; sourceTree = "<group>"; };
 		B4D1FFCC15FF5F05009736E2 /* DDZipReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DDZipReader.h; sourceTree = "<group>"; };
@@ -601,6 +612,12 @@
 				7321D0E612944CF500796DEC /* GBTemplateHandler.m */,
 				735B2385130418A000704844 /* GBTemplateFilesHandler.h */,
 				735B2386130418A000704844 /* GBTemplateFilesHandler.m */,
+				A9C774041D5CF08F0099A709 /* GBMarkdownOutputGenerator.h */,
+				A9C774051D5CF08F0099A709 /* GBMarkdownOutputGenerator.m */,
+				A98533CE1D63965B001C1EDD /* GBFullMarkdownOutputGenerator.h */,
+				A98533CF1D63965B001C1EDD /* GBFullMarkdownOutputGenerator.m */,
+				A94AC0E61D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.h */,
+				A94AC0E71D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.m */,
 			);
 			path = Generating;
 			sourceTree = "<group>";
@@ -1178,6 +1195,7 @@
 				733EA155122BDED20060CBDE /* GBStoreTesting.m in Sources */,
 				733EA156122BDED30060CBDE /* GBTestObjectsRegistry.m in Sources */,
 				733EA157122BDED30060CBDE /* GBTokenizerTesting.m in Sources */,
+				A9C774071D5CF08F0099A709 /* GBMarkdownOutputGenerator.m in Sources */,
 				733EA17A122BE1650060CBDE /* GBCategoryData.m in Sources */,
 				733EA17B122BE1660060CBDE /* GBClassData.m in Sources */,
 				733EA17C122BE1670060CBDE /* GBComment.m in Sources */,
@@ -1242,6 +1260,7 @@
 				B4D1FFDE15FF5F05009736E2 /* DDZippedFileInfo.m in Sources */,
 				B4D1FFE015FF5F05009736E2 /* DDZipReader.m in Sources */,
 				B4D1FFE215FF5F05009736E2 /* DDZipWriter.m in Sources */,
+				A94AC0E91D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.m in Sources */,
 				B4D1FFE415FF5F05009736E2 /* DDEmbeddedDataReader.m in Sources */,
 				B4D1FFE615FF5F05009736E2 /* DDXcodeProjectFile.m in Sources */,
 				7D11DEC417BA61CA0027DC2D /* GBEnumConstantData.m in Sources */,
@@ -1268,6 +1287,7 @@
 				73FC6DDC11FCCE6B00AAD0B9 /* GBObjectiveCParser.m in Sources */,
 				73FC6E1011FCD54400AAD0B9 /* GBStore.m in Sources */,
 				73FC6E8811FCD93A00AAD0B9 /* GBClassData.m in Sources */,
+				A98533D01D63965B001C1EDD /* GBFullMarkdownOutputGenerator.m in Sources */,
 				73FC701311FCEA7200AAD0B9 /* PKToken+GBToken.m in Sources */,
 				73FC702911FCEB5300AAD0B9 /* GBTokenizer.m in Sources */,
 				73FC729911FD925B00AAD0B9 /* GBAdoptedProtocolsProvider.m in Sources */,
@@ -1288,6 +1308,7 @@
 				7307B31B124A1C2E007EC6B8 /* GBMethodSectionData.m in Sources */,
 				736B2BF7124BCBB6009145B1 /* GBSourceInfo.m in Sources */,
 				DA98B5921972151100059171 /* GBTypedefBlockArgument.m in Sources */,
+				A94AC0E81D60EA5800811E46 /* GBMarkdownTemplateVariablesProvider.m in Sources */,
 				73AA9F731253BF4000074152 /* GBGenerator.m in Sources */,
 				DA77C691196BEB2C0018A48F /* dd_getopt_long-fbsd.m in Sources */,
 				739AD5801255C3E600B642C3 /* GBApplicationStringsProvider.m in Sources */,
@@ -1307,6 +1328,7 @@
 				732E6CBD12DF02B7009DD6E0 /* NSArray+GBArray.m in Sources */,
 				7335F72B12E58DCC0094F72E /* GBDocSetInstallGenerator.m in Sources */,
 				7335F72E12E58E160094F72E /* GBDocSetPublishGenerator.m in Sources */,
+				A9C774061D5CF08F0099A709 /* GBMarkdownOutputGenerator.m in Sources */,
 				735B23811304024600704844 /* GBDocumentData.m in Sources */,
 				735B2387130418A100704844 /* GBTemplateFilesHandler.m in Sources */,
 				73AF4EC813093570001152DB /* GBCommentComponent.m in Sources */,

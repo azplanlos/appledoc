@@ -93,6 +93,9 @@ static char *kGBArgDocSetAtomFilename = "docset-atom-filename";
 static char *kGBArgDocSetXMLFilename = "docset-xml-filename";
 static char *kGBArgDocSetPackageFilename = "docset-package-filename";
 
+static char *kGBArgMarkdownOutputFilename = "markdown-output-filename";
+static char *kGBArgCreateMarkdown = "create-markdown";
+
 static char *kGBArgLogFormat = "logformat";
 static char *kGBArgVerbose = "verbose";
 static char *kGBArgPrintSettings = "print-settings";
@@ -332,6 +335,9 @@ static char *kGBArgHelp = "help";
 		{ GBNoArg(kGBArgWarnOnInvalidCrossReference),						0,		DDGetoptNoArgument },
 		{ GBNoArg(kGBArgWarnOnMissingMethodArgument),						0,		DDGetoptNoArgument },
         { GBNoArg(kGBArgWarnOnUnsupportedTypedefEnum),						0,		DDGetoptNoArgument },
+        
+        { kGBArgMarkdownOutputFilename,                                     0,      DDGetoptRequiredArgument },
+        { kGBArgCreateMarkdown,                                             0,      DDGetoptNoArgumentNegatable },
 		
 		{ kGBArgLogFormat,													0,		DDGetoptRequiredArgument },
 		{ kGBArgVerbose,													0,		DDGetoptRequiredArgument },
@@ -445,6 +451,8 @@ static char *kGBArgHelp = "help";
 	if (self.settings.useSingleStarForBold) {
 		ddprintf(@"WARN: --%s may cause incompatibility with Markdown (* unordered lists etc.)", kGBArgUseSingleStar);
 	}
+    
+    NSLog(@"settings: %@", self.settings);
 }
 
 - (BOOL)extractShippedTemplatesToPath:(NSString *)path {
@@ -889,6 +897,9 @@ static char *kGBArgHelp = "help";
 - (void)setDocsetAtomFilename:(NSString *)value { self.settings.docsetAtomFilename = value; }
 - (void)setDocsetXmlFilename:(NSString *)value { self.settings.docsetXMLFilename = value; }
 - (void)setDocsetPackageFilename:(NSString *)value { self.settings.docsetPackageFilename = value; }
+- (void)setMarkdownOutputFilename:(NSString *)value { self.settings.markdownOutputFilename = value; }
+- (void)setCreateMarkdown:(BOOL)value {self.settings.createMarkdown = value; }
+- (void)setNoCreateMarkdown:(BOOL)value {self.settings.createMarkdown = !value; }
 
 @synthesize additionalInputPaths;
 @synthesize ignoredInputPaths;
@@ -989,6 +1000,10 @@ static char *kGBArgHelp = "help";
     ddprintf(@"--%s = %@\n", kGBArgWarnOnUnsupportedTypedefEnum, PRINT_BOOL(self.settings.warnOnUnsupportedTypedefEnum));
     ddprintf(@"\n");
     
+    ddprintf(@"--%s = %@\n", kGBArgMarkdownOutputFilename, self.settings.markdownOutputFilename);
+    ddprintf(@"--%s = %@\n", kGBArgCreateMarkdown, self.settings.createMarkdown);
+    ddprintf(@"\n");
+    
     ddprintf(@"--%s = %@\n", kGBArgLogFormat, self.logformat);
     ddprintf(@"--%s = %@\n", kGBArgVerbose, self.verbose);
     ddprintf(@"\n");
@@ -1081,6 +1096,9 @@ static char *kGBArgHelp = "help";
     PRINT_USAGE(@"   ", kGBArgDocSetXMLFilename, @"<string>", @"[*] DocSet xml feed filename");
 	PRINT_USAGE(@"   ", kGBArgDocSetPackageFilename, @"<string>", @"[*] DocSet package (.xar,.tgz) filename. Leave off the extension. This will be added depending on the generated package.");
 	ddprintf(@"\n");
+    PRINT_USAGE(@"   ", kGBArgCreateMarkdown, @"", @"[b] Creates markdown documentation set");
+    PRINT_USAGE(@"   ", kGBArgMarkdownOutputFilename, @"<string>", @"This will create a copy of the whole documentation in a single markdown document. Specify output filename here.");
+    ddprintf(@"\n");
 	ddprintf(@"MISCELLANEOUS\n");
 	PRINT_USAGE(@"   ", kGBArgLogFormat, @"<number>", @"Log format [0-3]");
 	PRINT_USAGE(@"   ", kGBArgVerbose, @"<value>", @"Log verbosity level [0-6,xcode]");

@@ -421,6 +421,10 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  */
 @property (assign) int exitCodeThreshold;
 
+@property (copy) NSString *markdownOutputFilename;
+
+@property (assign) BOOL createMarkdown;
+
 /** Title of the documentation section */
 @property (copy) NSString *docsSectionTitle;
 
@@ -568,6 +572,18 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  */
 - (NSString *)htmlReferenceNameForObject:(GBModelBase *)object;
 
+/** Returns markdown reference name for the given object.
+ 
+ This should only be used for creating anchors that need to be referenced from other parts of the same md file. The method works for static documents, top-level objects as well as their members.
+ 
+ @param object The object for which to return reference name.
+ @return Returns the reference name of the object.
+ @exception NSException Thrown if the given object is `nil`.
+ @see htmlReferenceForObject:fromSource:
+ @see htmlReferenceForObjectFromIndex:
+ */
+- (NSString *)mdReferenceNameForObject:(GBModelBase *)object;
+
 /** Returns relative HTML reference to the given object from the context of the given source object.
  
  This is useful for generating hrefs from one object HTML file to another. This is the swiss army knife king of a method for all hrefs generation. It works for any kind of links:
@@ -603,6 +619,19 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats format);
  @see htmlReferenceNameForObject:
  */
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
+
+/** Returns relative markdown reference to the given object from the context of index file.
+ 
+ This is simply a helper method for `mdReferenceForObject:fromSource:`, passing the given object as object parameter and `nil` as source.
+ 
+ @param object The object for which to generate the reference to.
+ @return Returns the reference string.
+ @exception NSException Thrown if object is `nil`.
+ @see htmlRelativePathToIndexFromObject:
+ @see htmlReferenceForObject:fromSource:
+ @see htmlReferenceNameForObject:
+ */
+- (NSString *)mdReferenceForObjectFromIndex:(GBModelBase *)object;
 
 /** Returns relative HTML path from the given object to the index file location.
  

@@ -13,6 +13,8 @@
 #import "GBDocSetFinalizeGenerator.h"
 #import "GBDocSetInstallGenerator.h"
 #import "GBDocSetPublishGenerator.h"
+#import "GBMarkdownOutputGenerator.h"
+#import "GBFullMarkdownOutputGenerator.h"
 #import "GBGenerator.h"
 
 @interface GBGenerator ()
@@ -57,6 +59,10 @@
 - (void)setupGeneratorStepsWithStore:(id)store {
 	// Setups all output generators. The order of these is crucial as they are invoked in the order added to the list. This forms a dependency where each next generator can use
 	GBLogDebug(@"Initializing generation steps...");
+    if (self.settings.markdownOutputFilename.length > 0) {
+        [self.outputGenerators addObject:[GBFullMarkdownOutputGenerator generatorWithSettingsProvider:self.settings]];
+    }
+    if (self.settings.createMarkdown) [self.outputGenerators addObject:[GBMarkdownOutputGenerator generatorWithSettingsProvider:self.settings]];
 	if (!self.settings.createHTML) return;
 	[self.outputGenerators addObject:[GBHTMLOutputGenerator generatorWithSettingsProvider:self.settings]];
 	if (!self.settings.createDocSet) return;

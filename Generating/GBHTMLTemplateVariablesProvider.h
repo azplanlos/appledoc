@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class GBClassData;
+@class GBClassData, GBDocumentData, GBCategoryData, GBProtocolData, GBTypedefEnumData, GBTypedefBlockData;
 
 /** Provides variables for HTML template string for given objects.
  

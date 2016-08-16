@@ -571,6 +571,22 @@
 	assertThat(settings.docsetPackageFilename, is(@"value"));
 }
 
+- (void)testMarkdownOutputFilename_shouldAssignValueToSettings {
+    // setup & execute
+    GBApplicationSettingsProvider *settings = [self settingsByRunningWithArgs:@"--markdown-output-filename", @"value", nil];
+    // verify
+    assertThat(settings.markdownOutputFilename, is(@"value"));
+}
+
+- (void)testCreateMarkdown_shouldAssignValueToSettings {
+    // setup & execute
+    GBApplicationSettingsProvider *settings1 = [self settingsByRunningWithArgs:@"--create-markdown", nil];
+    GBApplicationSettingsProvider *settings2 = [self settingsByRunningWithArgs:@"--no-create-markdown", nil];
+    // verify
+    assertThatBool(settings1.createMarkdown, equalToBool(YES));
+    assertThatBool(settings2.createMarkdown, equalToBool(NO));
+}
+
 #pragma mark Creation methods
 
 - (GBApplicationSettingsProvider *)settingsByRunningWithArgs:(NSString *)first, ... {

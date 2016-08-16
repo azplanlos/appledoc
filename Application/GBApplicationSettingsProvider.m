@@ -81,6 +81,7 @@ NSString *NSStringFromGBPublishedFeedFormats(GBPublishedFeedFormats formats) {
 
 + (NSSet *)nonCopyableProperties;
 - (NSString *)htmlReferenceForObjectFromIndex:(GBModelBase *)object;
+- (NSString *)mdReferenceForObjectFromIndex:(GBModelBase *)object;
 - (NSString *)htmlReferenceForTopLevelObject:(GBModelBase *)object fromTopLevelObject:(GBModelBase *)source;
 - (NSString *)htmlReferenceForMember:(id)member prefixedWith:(id)prefix;
 - (NSString *)outputPathForObject:(id)object withExtension:(NSString *)extension;
@@ -189,6 +190,9 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
         self.docsetXMLFilename = [NSString stringWithFormat:@"%@.%@.xml", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID];
 		self.docsetPackageFilename = [NSString stringWithFormat:@"%@.%@-%@", kGBTemplatePlaceholderCompanyID, kGBTemplatePlaceholderProjectID, kGBTemplatePlaceholderVersionID];
 		
+        self.markdownOutputFilename = @"";
+        self.createMarkdown = NO;
+        
 		self.commentComponents = [GBCommentComponentsProvider provider];
 		self.stringTemplates = [GBApplicationStringsProvider provider];
 	}
@@ -419,6 +423,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 	return [self outputPathForObject:object withExtension:[self htmlExtension]];
 }
 
+- (NSString *)mdReferenceForObjectFromIndex:(GBModelBase *)object {
+    return [self outputPathForObject:object withExtension:[self mdExtension]];
+}
+
 - (NSString *)htmlReferenceForTopLevelObject:(id)object fromTopLevelObject:(id)source {
 	// Handles top-level object or document to top-level object or document.
 	NSString *path = [self outputPathForObject:object withExtension:[self htmlExtension]];
@@ -448,6 +456,10 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 
 - (NSString *)htmlExtension {
 	return @"html";
+}
+
+- (NSString *)mdExtension {
+    return @"md";
 }
 
 #pragma mark Common template files helpers
@@ -712,6 +724,8 @@ SYNTHESIZE_SINGLETON_FOR_CLASS(GBApplicationSettingsProvider, sharedApplicationS
 @synthesize treatDocSetIndexingErrorsAsFatals;
 @synthesize exitCodeThreshold;
 @synthesize docsSectionTitle;
+
+@synthesize markdownOutputFilename;
 
 @synthesize warnOnMissingOutputPathArgument;
 @synthesize warnOnMissingCompanyIdentifier;
