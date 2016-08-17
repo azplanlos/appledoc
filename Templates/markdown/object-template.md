@@ -92,6 +92,7 @@ _{{filename}}_
 {{>BlocksDefList}}
 {{/typedefBlock}}
 
+{{footer}}
 
 Section ObjectSpecification
 | _{{title}}_ | {{#values}}{{string}}{{&delimiter}}{{/values}} |

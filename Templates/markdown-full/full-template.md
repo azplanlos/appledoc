@@ -121,6 +121,8 @@ EndSection
 {{>objectDescription}}
 {{/blocks}}
 
+{{footer}}
+
 Section objectDescription
 ##{{page.title}}
 

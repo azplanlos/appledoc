@@ -154,4 +154,8 @@ static NSString *kGBValueKey = @"value";
 	[_templateSections removeAllObjects];
 }
 
+-(GRMustacheTemplate*)mustacheTemplate {
+    return _template;
+}
+
 @end

@@ -29,6 +29,8 @@
 {{/hasCategories}}
 {{/hasProtocolsOrCategories}}
 
+{{footer}}
+
 Section Classes
 {{#hasClasses}}
 {{#classes}}{{#levelIndent(level)}}{{/}}[{{name}}]({{#href}}{{href}}{{/href}}){{>Classes}}

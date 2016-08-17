@@ -142,4 +142,6 @@
  */
 - (NSDictionary *)variablesForHierarchyWithStore:(id)store;
 
+- (void)addFooterVarsToDictionary:(NSMutableDictionary *)dict;
+
 @end

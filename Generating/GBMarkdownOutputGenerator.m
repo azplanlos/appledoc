@@ -20,6 +20,7 @@
 @property (readonly) GBTemplateHandler *mdIndexTemplate;
 @property (readonly) GBTemplateHandler *mdHierarchyTemplate;
 @property (readonly) GBTemplateHandler *mdDocumentTemplate;
+@property (readonly) GBTemplateHandler *mdFooterTemplate;
 
 @end
 
@@ -68,6 +69,13 @@
         }
         return NO;
     }
+    if (!self.mdFooterTemplate) {
+        if (error) {
+            NSString *desc = [NSString stringWithFormat:@"Footer template file 'footer.md' is missing at '%@'!", self.templateUserPath];
+            *error = [NSError errorWithCode:GBErrorHTMLHierarchyTemplateMissing description:desc reason:nil];
+        }
+        return NO;
+    }
     return YES;
 }
 
@@ -77,6 +85,7 @@
 
         if (!class.includeInOutput) continue;
         NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         NSString *output = [self.mdObjectTemplate renderObject:vars];
         NSString *path = [self mdOutputPathForObject:class];
         if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
@@ -93,6 +102,7 @@
         if (!category.includeInOutput) continue;
         GBLogInfo(@"Generating output for category %@...", category);
         NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         NSString *output = [self.mdObjectTemplate renderObject:vars];
         NSString *path = [self mdOutputPathForObject:category];
         if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
@@ -109,6 +119,7 @@
         if (!protocol.includeInOutput) continue;
         GBLogInfo(@"Generating output for protocol %@...", protocol);
         NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         NSString *output = [self.mdObjectTemplate renderObject:vars];
         NSString *path = [self mdOutputPathForObject:protocol];
         if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
@@ -125,6 +136,7 @@
         if (!enumTypedef.includeInOutput) continue;
         GBLogInfo(@"Generating output for constant %@...", enumTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForConstant:enumTypedef withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         NSString *output = [self.mdObjectTemplate renderObject:vars];
         NSString *path = [self mdOutputPathForObject:enumTypedef];
         if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
@@ -141,6 +153,7 @@
         if (!blockTypedef.includeInOutput) continue;
         GBLogInfo(@"Generating output for block %@...", blockTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForBlocks:blockTypedef withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         NSString *output = [self.mdObjectTemplate renderObject:vars];
         NSString *path = [self mdOutputPathForObject:blockTypedef];
         if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
@@ -169,6 +182,7 @@
     for (GBDocumentData *document in self.store.documents) {
         GBLogInfo(@"Generating output for document %@...", document);
         NSDictionary *vars = [self.variablesProvider variablesForDocument:document withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         NSString *output = [self.mdDocumentTemplate renderObject:vars];
         NSString *path = [self mdOutputPathForObject:document];
         if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
@@ -184,6 +198,7 @@
     GBLogInfo(@"Generating output for index...");
     if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0 || [self.store.blocks count] > 0) {
         NSDictionary *vars = [self.variablesProvider variablesForIndexWithStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         NSString *output = [self.mdIndexTemplate renderObject:vars];
         NSString *path = [[self mdOutputPathForIndex] stringByStandardizingPath];
         if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
@@ -198,21 +213,8 @@
 - (BOOL)processHierarchy:(NSError **)error {
     GBLogInfo(@"Generating output for hierarchy...");
     if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0 || [self.store.blocks count] > 0) {
-        NSMutableDictionary *vars = [NSMutableDictionary dictionaryWithDictionary:[self.variablesProvider variablesForHierarchyWithStore:self.store]];
-        [vars setObject:[GRMustacheFilter filterWithBlock:^id(NSNumber *countNumber) {
-            
-            // ... extracts the count from its argument...
-            NSUInteger count = [countNumber unsignedIntegerValue];
-            
-            // ... and actually returns an object that processes the section it renders for:
-            return [GRMustacheRendering renderingObjectWithBlock:^NSString *(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError *__autoreleasing *error) {
-                // ... and finally use our count
-                NSMutableString* levelIdent = [NSMutableString new];
-                for (int i = 0; i < count; i++) [levelIdent appendString:@" "];
-                [levelIdent appendString:@"- "];
-                return levelIdent;
-            }];
-        }] forKey:@"levelIndent"];
+        NSDictionary *vars = [self.variablesProvider variablesForHierarchyWithStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         NSString *output = [self.mdHierarchyTemplate renderObject:vars];
         NSString *path = [[self mdOutputPathForHierarchy] stringByStandardizingPath];
         if (![self writeString:output toFile:[path stringByStandardizingPath] error:error]) {
@@ -222,6 +224,30 @@
     }
     GBLogDebug(@"Finished generating output for hierarchy.");
     return YES;
+}
+
+-(NSDictionary*)dictionaryByAddingTemplateFunctionsAndDefaultTemplates:(NSDictionary*)vars {
+    NSMutableDictionary* mutableVars = [NSMutableDictionary dictionaryWithDictionary:vars];
+    [mutableVars setObject:[GRMustacheFilter filterWithBlock:^id(NSNumber *countNumber) {
+        
+        // ... extracts the count from its argument...
+        NSUInteger count = [countNumber unsignedIntegerValue];
+        
+        // ... and actually returns an object that processes the section it renders for:
+        return [GRMustacheRendering renderingObjectWithBlock:^NSString *(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError *__autoreleasing *error) {
+            // ... and finally use our count
+            NSMutableString* levelIdent = [NSMutableString new];
+            for (int i = 0; i < count; i++) [levelIdent appendString:@" "];
+            [levelIdent appendString:@"- "];
+            return levelIdent;
+        }];
+    }] forKey:@"levelIndent"];
+    [mutableVars setObject:[[self mdFooterTemplate] mustacheTemplate] forKey:@"footer"];
+    return [NSDictionary dictionaryWithDictionary:mutableVars];
+}
+
+- (GBTemplateHandler *)mdFooterTemplate {
+    return self.templateFiles[@"footer-template.md"];
 }
 
 - (GBTemplateHandler *)mdObjectTemplate {

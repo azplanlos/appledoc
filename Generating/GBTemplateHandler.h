@@ -77,4 +77,6 @@
  */
 - (NSString *)renderObject:(id)object;
 
+-(GRMustacheTemplate*)mustacheTemplate;
+
 @end

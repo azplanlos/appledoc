@@ -2,6 +2,8 @@
 
 {{#object.comment}}{{#longDescription}}{{>GBCommentComponentsList}}{{/longDescription}}{{/object.comment}}
 
+{{footer}}
+
 Section GBCommentComponentsList
 {{#components}}{{>GBCommentComponent}}{{/components}}
 EndSection

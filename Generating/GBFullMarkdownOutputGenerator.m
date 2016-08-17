@@ -19,6 +19,7 @@
 @interface GBFullMarkdownOutputGenerator ()
 
 @property (readonly) GBTemplateHandler* mdFullTemplate;
+@property (readonly) GBTemplateHandler *mdFooterTemplate;
 
 @end
 
@@ -37,6 +38,7 @@
         GBLogInfo(@"Generating output for class %@...", class);
         if (!class.includeInOutput) continue;
         NSDictionary *vars = [self.variablesProvider variablesForClass:class withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         [classes addObject:vars];
     }
     NSMutableArray* categories = [NSMutableArray new];
@@ -44,6 +46,7 @@
         if (!category.includeInOutput) continue;
         GBLogInfo(@"Generating output for category %@...", category);
         NSDictionary *vars = [self.variablesProvider variablesForCategory:category withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         [categories addObject:vars];
     }
     NSMutableArray* protocols = [NSMutableArray new];
@@ -51,6 +54,7 @@
         if (!protocol.includeInOutput) continue;
         GBLogInfo(@"Generating output for protocol %@...", protocol);
         NSDictionary *vars = [self.variablesProvider variablesForProtocol:protocol withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         [protocols addObject:vars];
     }
     NSMutableArray* constants = [NSMutableArray new];
@@ -58,6 +62,7 @@
         if (!enumTypedef.includeInOutput) continue;
         GBLogInfo(@"Generating output for constant %@...", enumTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForConstant:enumTypedef withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         [constants addObject:vars];
     }
     NSMutableArray* blocks = [NSMutableArray new];
@@ -65,41 +70,34 @@
         if (!blockTypedef.includeInOutput) continue;
         GBLogInfo(@"Generating output for block %@...", blockTypedef);
         NSDictionary *vars = [self.variablesProvider variablesForBlocks:blockTypedef withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         [blocks addObject:vars];
     }
     NSMutableArray* documents = [NSMutableArray new];
     for (GBDocumentData *document in self.store.documents) {
         GBLogInfo(@"Generating output for document %@...", document);
         NSDictionary *vars = [self.variablesProvider variablesForDocument:document withStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         [documents addObject:vars];
     }
     GBLogInfo(@"Generating output for index...");
     NSMutableDictionary* index = [NSMutableDictionary new];
     if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0 || [self.store.blocks count] > 0) {
         NSDictionary *vars = [self.variablesProvider variablesForIndexWithStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         [index setValuesForKeysWithDictionary:vars];
     }
     GBLogInfo(@"Generating output for hierarchy...");
     NSMutableDictionary* hierarchy = [NSMutableDictionary new];
     if ([self.store.classes count] > 0 || [self.store.protocols count] > 0 || [self.store.categories count] > 0 || [self.store.constants count] > 0 || [self.store.blocks count] > 0) {
-        NSMutableDictionary *vars = [NSMutableDictionary dictionaryWithDictionary:[self.variablesProvider variablesForHierarchyWithStore:self.store]];
-        [vars setObject:[GRMustacheFilter filterWithBlock:^id(NSNumber *countNumber) {
-            
-            // ... extracts the count from its argument...
-            NSUInteger count = [countNumber unsignedIntegerValue];
-            
-            // ... and actually returns an object that processes the section it renders for:
-            return [GRMustacheRendering renderingObjectWithBlock:^NSString *(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError *__autoreleasing *error) {
-                // ... and finally use our count
-                NSMutableString* levelIdent = [NSMutableString new];
-                for (int i = 0; i < count; i++) [levelIdent appendString:@" "];
-                [levelIdent appendString:@"- "];
-                return levelIdent;
-            }];
-        }] forKey:@"levelIndent"];
+        NSDictionary *vars = [self.variablesProvider variablesForHierarchyWithStore:self.store];
+        vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
         [hierarchy setValuesForKeysWithDictionary:vars];
     }
-    NSDictionary* vars = @{@"classes": classes, @"categories": categories, @"protocols": protocols, @"constants": constants, @"blocks": blocks, @"documents": documents, @"index": index, @"hierarchy": hierarchy};
+    NSMutableDictionary* page = [NSMutableDictionary new];
+    [self.variablesProvider addFooterVarsToDictionary:page];
+    NSDictionary* vars = @{@"classes": classes, @"categories": categories, @"protocols": protocols, @"constants": constants, @"blocks": blocks, @"documents": documents, @"index": index, @"hierarchy": hierarchy, @"page": page };
+    vars = [self dictionaryByAddingTemplateFunctionsAndDefaultTemplates:vars];
     NSLog(@"vars: %@", vars);
     NSString *output = [self.mdFullTemplate renderObject:vars];
     NSString *path = self.settings.markdownOutputFilename;
@@ -122,6 +120,10 @@
     return YES;
 }
 
+- (NSString *)outputSubpath {
+    return @"markdown-full";
+}
+
 - (GBMarkdownTemplateVariablesProvider *)variablesProvider {
     static GBMarkdownTemplateVariablesProvider *result = nil;
     if (!result) {
@@ -133,6 +135,30 @@
 
 -(GBTemplateHandler*)mdFullTemplate {
     return self.templateFiles[@"full-template.md"];
+}
+
+- (GBTemplateHandler *)mdFooterTemplate {
+    return self.templateFiles[@"footer-template.md"];
+}
+
+-(NSDictionary*)dictionaryByAddingTemplateFunctionsAndDefaultTemplates:(NSDictionary*)vars {
+    NSMutableDictionary* mutableVars = [NSMutableDictionary dictionaryWithDictionary:vars];
+    [mutableVars setObject:[GRMustacheFilter filterWithBlock:^id(NSNumber *countNumber) {
+        
+        // ... extracts the count from its argument...
+        NSUInteger count = [countNumber unsignedIntegerValue];
+        
+        // ... and actually returns an object that processes the section it renders for:
+        return [GRMustacheRendering renderingObjectWithBlock:^NSString *(GRMustacheTag *tag, GRMustacheContext *context, BOOL *HTMLSafe, NSError *__autoreleasing *error) {
+            // ... and finally use our count
+            NSMutableString* levelIdent = [NSMutableString new];
+            for (int i = 0; i < count; i++) [levelIdent appendString:@" "];
+            [levelIdent appendString:@"- "];
+            return levelIdent;
+        }];
+    }] forKey:@"levelIndent"];
+    [mutableVars setObject:[[self mdFooterTemplate] mustacheTemplate] forKey:@"footer"];
+    return [NSDictionary dictionaryWithDictionary:mutableVars];
 }
 
 @end

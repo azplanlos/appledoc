@@ -43,3 +43,5 @@
 {{/categories}}
 {{/hasCategories}}
 {{/hasProtocolsOrCategories}}
+
+{{footer}}
